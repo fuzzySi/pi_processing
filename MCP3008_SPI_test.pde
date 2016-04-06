@@ -1,5 +1,13 @@
 // SPI to MCP3008 8 chanel ADC for processing on raspberry pi
 
+// MCP pin 16, 15 to 3v3 on pi (eg pin 1)
+// MCP pin 14 & 9 to ground (eg pin 9)
+// MCP pin 13 CLK to pi SPI_CLK pin 23
+// MCP pin 12 Dout to pi SPI_MISO pin 21
+// MCP pin 11 Din to pi SPI_MOSI pin 19
+// MCP pin 10 CS to pi SPI_CE0_N pin 24
+// MCP pins 1-8 are ADC ins for channels 0-7
+
 import processing.io.*;
 SPI MCP;
 int CHANNELS = 8; // 8 for MCP 3008, 4 for MCP3004
