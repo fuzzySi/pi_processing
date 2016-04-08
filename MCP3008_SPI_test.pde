@@ -32,6 +32,7 @@ int returnADC(int ch) {
   byte[] in = MCP.transfer(out); // sends & returns
   int highInt = in[1] & 0xFF; // processing sees bytes as signed (-128 to 127) which is not what we want here
   int lowInt = in[2] & 0xFF; // doing this converts to unsigned ints (0 to 255)
+   // here's why http://stackoverflow.com/questions/4266756/can-we-make-unsigned-byte-in-java
   int result = ((highInt & 3) << 8) + lowInt; // adds lowest 2 bits of 2nd byte to 3rd byte to get 10 bit result 
   return result;
 }
