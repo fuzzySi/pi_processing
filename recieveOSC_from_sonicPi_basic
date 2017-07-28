@@ -29,3 +29,15 @@ live_loop :foo do
   osc "/hello/world"
   sleep 1
 end
+
+// to send a number from sPi, use to_s to convert to string, then add to osc message
+live_loop :foo do
+  play 60
+  d = rrand(50,90)
+  s = d.to_s
+  puts s
+  
+  use_osc "192.168.1.11", 8000
+  osc "/hello/world "+s
+  sleep 1
+end
