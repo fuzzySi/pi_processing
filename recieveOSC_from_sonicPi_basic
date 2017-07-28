@@ -1,0 +1,31 @@
+// This sketch runs on the receiving computer which will play the received notes
+import oscP5.*;
+import netP5.*;
+
+OscP5 oscP5;
+// NetAddress myBroadcastLocation; // if you want to send to pi also
+
+void setup() {
+  background(0);
+  frameRate(100);
+  size (1,1); // We don’t need to see anything.
+  oscP5 = new OscP5(this,8000); // The port to the source Sonic which the source processing app sends
+//  myBroadcastLocation = new NetAddress("127.0.0.1",4559); // The port on which Sonic Pi listens to incoming messages. 
+}
+
+void draw() {
+}
+
+void oscEvent(OscMessage theOscMessage) { // When you receive a message…
+println(theOscMessage);
+// println(theOscMessage.arguments());
+// oscP5.send(theOscMessage, myBroadcastLocation); //send it to Sonic Pi on this machine.
+}
+
+// in sonicPi, use this to send OSC
+live_loop :foo do
+  play 60  
+  use_osc "192.168.1.11", 8000
+  osc "/hello/world"
+  sleep 1
+end
