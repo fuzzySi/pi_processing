@@ -1,0 +1,29 @@
+// processing code to send OSC messages to sonic pi (v3)#
+// just basic proof of concept currently!
+// change netAddress to that of your pi, set it to accept external OSC messages. port no should be right
+
+import netP5.*;
+import oscP5.*;
+OscP5 oscP5;   
+NetAddress sonicPi;
+
+void setup() {
+ oscP5 = new OscP5(this, 8000);
+ sonicPi = new NetAddress("192.168.1.148", 4559); // to pi, port for SPi
+}
+void draw() {
+ int note = int(random(40,80));
+ int cutOff = int(random(50,100));
+ sendOscTest(note, cutOff);
+  delay(1000);
+}
+
+
+void sendOscTest(int pitch, int cutOff) {
+OscMessage test = new OscMessage("/trigger/prophet/");
+test.add(pitch);
+test.add(cutOff);
+test.add(1);
+oscP5.send(test, sonicPi);
+println(test);
+}
