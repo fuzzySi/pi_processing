@@ -41,3 +41,17 @@ live_loop :foo do
   osc "/hello/world "+s
   sleep 1
 end
+
+// send current tick number like this, resets when gets to 20
+live_loop :clickOut do
+  #play 60
+  e = tick(:click)
+  s = e.to_s
+  puts s
+  use_osc "192.168.1.11", 8000
+  osc "/click "+s
+  sleep 1
+  if e >= 19
+    tick_reset(:click)
+  end
+end
