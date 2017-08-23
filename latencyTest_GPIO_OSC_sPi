@@ -1,0 +1,56 @@
+// this tests the latency between a sample playing in sonic pi, and a GPIO pin on the pi turned on at the same time
+// sPi puts out OSC which processing catches, and turns on a GPIO pin. 
+// I'm getting 704ms, which is useless for triggering sounds, anyway. 
+
+import processing.io.*;
+import oscP5.*;
+import netP5.*;
+
+int outPin = 26;
+int pinHighTime = 50;
+long startPinHigh;
+
+OscP5 oscP5;
+// NetAddress myBroadcastLocation; // if you want to send to pi also
+
+void setup() {
+  background(0);
+  frameRate(100);
+  GPIO.pinMode(outPin, GPIO.OUTPUT);
+  GPIO.digitalWrite(outPin, GPIO.LOW);
+  size (1, 1); // We don’t need to see anything.
+  oscP5 = new OscP5(this, 8000); // The port to the source Sonic which the source processing app sends
+  //  myBroadcastLocation = new NetAddress("127.0.0.1",4559); // The port on which Sonic Pi listens to incoming messages.
+}
+
+void draw() {
+
+  if (millis() > startPinHigh + pinHighTime) {
+    GPIO.digitalWrite(outPin, GPIO.LOW);  
+  }
+}
+
+void oscEvent(OscMessage theOscMessage) { // When you receive a message…
+  println(theOscMessage);
+  GPIO.digitalWrite(outPin, GPIO.HIGH);
+  println("on");
+  startPinHigh = millis();
+  println(startPinHigh);
+
+  // println(theOscMessage.arguments());
+  // oscP5.send(theOscMessage, myBroadcastLocation); //send it to Sonic Pi on this machine.
+}
+
+/*
+// in sonicPi, use this to send OSC
+live_loop :foo do
+  # play 60
+  sample :perc_snap
+  d = rrand(50,90)
+  s = d.to_s
+  puts s
+  use_osc "192.168.1.159", 8000 # change to your ip address (ifconfig will tell you)
+  osc "/hello/world "+s
+  sleep 1
+end
+*/
