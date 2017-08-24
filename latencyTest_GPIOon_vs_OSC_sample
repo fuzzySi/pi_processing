@@ -1,0 +1,48 @@
+// processing code to send OSC messages to sonic pi (v3)#
+// turns on pin 26 at same time as sending OSC message, to assess latency
+// change netAddress to that of your pi, set it to accept external OSC messages. port no should be right
+
+import processing.io.*;
+import netP5.*;
+import oscP5.*;
+OscP5 oscP5;   
+NetAddress sonicPi;
+
+int outPin = 26;
+int pinHighTime = 50;
+long startPinHigh;
+
+void setup() {
+ oscP5 = new OscP5(this, 8000);
+ sonicPi = new NetAddress("192.168.1.159", 4559); // to pi, port for SPi
+   GPIO.pinMode(outPin, GPIO.OUTPUT);
+  GPIO.digitalWrite(outPin, GPIO.LOW);
+}
+void draw() {
+ int note = int(random(40,80));
+ int cutOff = int(random(50,100));
+ sendOscTest(note, cutOff);
+ GPIO.digitalWrite(outPin, GPIO.HIGH);
+  delay(1000);
+   GPIO.digitalWrite(outPin, GPIO.LOW);
+   delay(1000);
+}
+
+
+void sendOscTest(int pitch, int cutOff) {
+OscMessage test = new OscMessage("/trigger/prophet/");
+test.add(pitch);
+test.add(cutOff);
+test.add(0.2);
+oscP5.send(test, sonicPi);
+println(test);
+}
+
+/*
+# in sonic pi
+live_loop :foo do
+  use_real_time
+  a, b, c = sync "/osc/trigger/prophet"
+  synth :prophet, note: a, cutoff: b, sustain: c
+end
+*/
